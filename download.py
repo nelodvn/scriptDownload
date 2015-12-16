@@ -46,33 +46,42 @@ def download(url, pageCount):
 	f.close()
 	return status
 
-cont = 1
-print "     iNFO :: Os livros serão salvos na pasta /tmp/lelivros"
-while True:
-	url = "http://lelivros.website/book/page/" + str(cont) + "/"
-	print('     iNFO :: Pagnia atual: ' + str(cont))
-	response = requests.get(url)
-	# parse html
-	page = str(BeautifulSoup(response.content))
-	urlAnterior = ''
+
+def main():
+	cont = 9
+	print "     iNFO :: Os livros serão salvos na pasta /tmp/lelivros"
 	while True:
-	    url, n = getURL(page)
-	    page = page[n:]
-	    if url: 
-	    	if "http://lelivros.website/book" in url: 
-	    		if url != urlAnterior:
-	    			#print url
-		    		responseDownload = requests.get(url)
-		    		pageDownload = str(BeautifulSoup(responseDownload.content))
-		    		while True:
-		    			urlDownload, n = getURL(pageDownload)
-		    			pageDownload = pageDownload[n:]
-		    			if urlDownload:
-		    				if ".mobi" in urlDownload:
-		    					print(download(urlDownload, str(cont)))
-		    			else:
-		    				break
-	    	urlAnterior = url
-	    else:
-	        break
-	cont = cont + 1
+		url = "http://lelivros.website/book/page/" + str(cont) + "/"
+		print('     iNFO :: Pagnia atual: ' + str(cont))
+		response = requests.get(url)
+		# parse html
+		page = str(BeautifulSoup(response.content))
+		urlAnterior = ''
+		while True:
+		    url, n = getURL(page)
+		    page = page[n:]
+		    if url: 
+		    	if "http://lelivros.website/book" in url: 
+		    		if url != urlAnterior:
+		    			#print url
+			    		responseDownload = requests.get(url)
+			    		pageDownload = str(BeautifulSoup(responseDownload.content))
+			    		try:
+				    		while True:
+				    			urlDownload, n = getURL(pageDownload)
+				    			pageDownload = pageDownload[n:]
+				    			if urlDownload:
+				    				if ".mobi" in urlDownload:
+				    					print(download(urlDownload, str(cont)))
+				    			else:
+				    				break
+				    	except:
+				    		pass
+
+		    	urlAnterior = url
+		    else:
+		        break
+		cont += 1
+
+if __name__ == '__main__':
+	main()
